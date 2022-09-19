@@ -466,6 +466,11 @@ class Proxy
             echo 'Body sent from proxy to client' . PHP_EOL . PHP_EOL;
         }
 
+        if (!empty(static::$TARGET_URL)) {
+            $proxyURL = ($_SERVER['HTTPS']?'https':'http').'://'.$_SERVER['SERVER_NAME'];
+            $responseBody = str_replace(static::$TARGET_URL, $proxyURL, $responseBody);
+        }
+
         echo $responseBody;
         return $responseCode;
     }
