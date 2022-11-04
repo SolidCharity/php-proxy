@@ -345,7 +345,9 @@ class Proxy
                 }
             }
 
-            curl_setopt($request, CURLOPT_POSTFIELDS, $data + $_POST);
+            // to avoid error: array to string conversion; due to nested array elements
+            curl_setopt($request, CURLOPT_HTTPHEADER,array('Content-Type: application/json'));
+            curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($data + $_POST));
         }
 
         $headers = static::getIncomingRequestHeaders(static::getSkippedHeaders());
