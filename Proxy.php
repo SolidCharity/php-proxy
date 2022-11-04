@@ -346,20 +346,19 @@ class Proxy
             }
 
             // to avoid error: array to string conversion; due to nested array elements
-            // check if we have a nested array
+            // flatten a nested array
             $postfields = $data + $_POST;
-            $nested = false;
+            $flatpostfields = $data + $_POST;
             foreach(array_keys($postfields) as $key) {
-                if (is_array($postfields[$key])) {
-                    $nested = true;
+                $value = $postfields[$key];
+                if (is_array($value)) {
+                    foreach(array_keys($value) as $key2) {
+                        $flatpostfields[$key.'['.$key2.']'] = $value[$key2];
+                    }
+                    unset($flatpostfields[$key]);
                 }
             }
-            if ($nested) {
-                curl_setopt($request, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-                curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($postfields));
-            } else {
-                curl_setopt($request, CURLOPT_POSTFIELDS, $postfields);
-            }
+            curl_setopt($request, CURLOPT_POSTFIELDS, $flatpostfields);
         }
 
         if (!empty($_COOKIE)) {
