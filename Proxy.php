@@ -350,6 +350,16 @@ class Proxy
             curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($data + $_POST));
         }
 
+        if (!empty($_COOKIE)) {
+
+            $cookie_str = "";
+            foreach(array_keys($_COOKIE) as $key) {
+                $cookie_str .= $key."=".$_COOKIE[$key].'; ';
+            }
+
+            curl_setopt($request, CURLOPT_COOKIE, $cookie_str);
+        }
+
         $headers = static::getIncomingRequestHeaders(static::getSkippedHeaders());
 
         curl_setopt_array($request, [
