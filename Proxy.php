@@ -346,8 +346,20 @@ class Proxy
             }
 
             // to avoid error: array to string conversion; due to nested array elements
-            curl_setopt($request, CURLOPT_HTTPHEADER,array('Content-Type: application/json'));
-            curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($data + $_POST));
+            // check if we have a nested array
+            $postfields = $data + $_POST;
+            $nested = false;
+            foreach(array_keys($postfields) as $key) {
+                if (is_array($postfields[$key])) {
+                    $nested = true;
+                }
+            }
+            if ($nested) {
+                curl_setopt($request, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+                curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($postfields));
+            } else {
+                curl_setopt($request, CURLOPT_POSTFIELDS, $postfields);
+            }
         }
 
         if (!empty($_COOKIE)) {
