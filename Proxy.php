@@ -374,7 +374,7 @@ class Proxy
         $headers = static::getIncomingRequestHeaders(static::getSkippedHeaders());
 
         curl_setopt_array($request, [
-            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_HEADER => static::$CURLOPT_HEADER,
             CURLOPT_RETURNTRANSFER => static::$CURLOPT_RETURNTRANSFER,
             CURLINFO_HEADER_OUT => true,
@@ -440,7 +440,7 @@ class Proxy
 
             // Pass following headers to response
             if (in_array($loweredHeaderName,
-                ['content-type', 'content-language', 'content-security', 'server'])) {
+                ['content-type', 'content-language', 'content-security', 'server', 'location'])) {
                 header("$headerName: $headerValue");
             } elseif (strpos($loweredHeaderName, 'x-') === 0) {
                 header("$headerName: $headerValue");
