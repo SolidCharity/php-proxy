@@ -138,7 +138,11 @@ class Proxy
     protected static function exitWithError($message)
     {
         http_response_code(500);
-        echo 'PROXY ERROR: ' . $message;
+        if (static::isDebug()) {
+            echo 'PROXY ERROR: ' . $message;
+        } else {
+            echo 'PROXY ERROR';
+        }
         exit(500);
     }
 
