@@ -441,6 +441,7 @@ class Proxy
             // Pass following headers to response
             if (in_array($loweredHeaderName,
                 ['content-type', 'content-language', 'content-security', 'server', 'location'])) {
+                $headerValue = str_replace($targetURL, "https://".$_SERVER['HTTP_HOST'], $headerValue);
                 header("$headerName: $headerValue");
             } elseif (strpos($loweredHeaderName, 'x-') === 0) {
                 header("$headerName: $headerValue");
