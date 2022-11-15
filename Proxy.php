@@ -395,6 +395,7 @@ class Proxy
 
         $debug = static::isDebug();
         $targetURL = static::getTargetUrl();
+        $proxyURL = ($_SERVER['HTTPS']?'https':'http').'://'.$_SERVER['HTTP_HOST'];
 
         $request = static::createRequest($targetURL);
 
@@ -441,7 +442,7 @@ class Proxy
             // Pass following headers to response
             if (in_array($loweredHeaderName,
                 ['content-type', 'content-language', 'content-security', 'server', 'location'])) {
-                $headerValue = str_replace($targetURL, "https://".$_SERVER['HTTP_HOST'], $headerValue);
+                $headerValue = str_replace($targetURL, $proxyURL, $headerValue);
                 header("$headerName: $headerValue");
             } elseif (strpos($loweredHeaderName, 'x-') === 0) {
                 header("$headerName: $headerValue");
@@ -498,8 +499,8 @@ class Proxy
         }
 
         if (!empty(static::$TARGET_URL)) {
-            $proxyURL = ($_SERVER['HTTPS']?'https':'http').'://'.$_SERVER['SERVER_NAME'];
-            $responseBody = str_replace(static::$TARGET_URL, $proxyURL, $responseBody);
+            $responseBody = str_replace($targetURL, $proxyURL, $responseBody);
+            $responseBody = str_replace(urlencode($targetURL), urlencode($proxyURL), $responseBody);
         }
 
         echo $responseBody;
